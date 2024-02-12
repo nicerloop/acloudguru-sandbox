@@ -31,14 +31,14 @@ changelog:
       - "^test:"
 
 brews:
-  - homepage: "https://example.com/"
-    description: "Software to create fast and easy drum rolls."
-    license: "MIT"
+  - homepage: "https://github.com/nicerloop/acloudguru-sandbox"
+    description: "Command-line tool to manage A Cloud Guru sandboxes and configure credentials."
+    license: "BSD-3-Clause"
     skip_upload: true
     repository:
       name: nicerloop/nicerloop
 scoops:
-  - homepage: "https://example.com/"
-    description: "Software to create fast and easy drum rolls."
-    license: MIT
+  - homepage: "https://github.com/nicerloop/acloudguru-sandbox"
+    description: "Command-line tool to manage A Cloud Guru sandboxes and configure credentials."
+    license: BSD-3-Clause
     skip_upload: true
