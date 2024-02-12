@@ -19,8 +19,16 @@ The code to get credentials from git originates from [gitauth](https://pkg.go.de
 [Rod](https://go-rod.github.io) is used to automate the required actions on [A Cloud Guru website](https://learn.acloud.guru/cloud-playground/cloud-sandboxes).
 
 You can see the actual interaction through the browser using [Rod confiduration parameters](https://go-rod.github.io/#/get-started/README?id=slow-motion-and-visual-trace):
+
 ```
 -rod=show,slow=1s,trace
+```
+
+## Using with a proxy server
+
+Add go-rod proxy parameters:
+```
+-rod=proxy=http://<host>:<port>
 ```
 
 ## Similar works and inspiration
