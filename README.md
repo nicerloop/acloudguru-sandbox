@@ -31,6 +31,31 @@ Add go-rod proxy parameters:
 -rod=proxy=http://<host>:<port>
 ```
 
+## How to install
+
+You can directly use the [released binaries](https://github.com/nicerloop/acloudguru-sandbox/releases) or use a package manager.
+
+### Windows with Scoop
+
+Install [Scoop](https://scoop.sh/):
+
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+```
+
+Add [nicerloop/nicerloop bucket](https://scoop.sh/#/apps?q=%22https%3A%2F%2Fgithub.com%2Fnicerloop%2Fscoop-nicerloop%22&o=false):
+
+```
+scoop bucket add nicerloop https://github.com/nicerloop/scoop-nicerloop
+```
+
+Install acloudguru-sandbox:
+
+```
+scoop install nicerloop/acloudguru-sandbox
+```
+
 ## Similar works and inspiration
 
 https://github.com/josephedward/gosandbox
