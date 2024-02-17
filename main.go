@@ -9,10 +9,10 @@ import (
 	"strings"
 
 	"github.com/go-rod/rod"
-	"github.com/go-rod/rod/lib/defaults"
-	"github.com/go-rod/rod/lib/input"
 
 	"github.com/go-ini/ini"
+
+	"acloudguru-sandbox/authproviders"
 )
 
 const acgSandbox = "acloudguru-sandbox"
@@ -20,8 +20,16 @@ const acgSandboxesUrl = "https://learn.acloud.guru/cloud-playground/cloud-sandbo
 
 func main() {
 	log.SetPrefix(fmt.Sprintf("%s: ", acgSandbox))
-	command := CheckSubCommand(acgSandbox, os.Args)
-	page := Login(GetGitCredentials(acgSandboxesUrl))
+	command, authproviderid := CheckSubCommand(acgSandbox, os.Args)
+
+	log.Printf("%s [AuthProvider: %s]", command, authproviderid)
+
+	authprovider := AuthProviderFactory(authproviderid)
+
+	log.Printf("AuthId: %s", authprovider.AuthId())
+
+	username, password := GetGitCredentials(acgSandboxesUrl)
+	page := authprovider.Login(acgSandboxesUrl, username, password)
 	switch command {
 	case "current":
 		command = DetectSandbox(page)
@@ -47,24 +55,56 @@ func main() {
 	Logout(page)
 }
 
-func CheckSubCommand(command string, args []string) string {
+type AuthProvider interface {
+	AuthId() string
+	Login(acgSandboxesUrl string, username string, password string) *rod.Page
+}
+
+func AuthProviderFactory(authproviderid string) AuthProvider {
+
+	// All auth providers
+	authproviders := [2]AuthProvider{
+		&authproviders.AuthGuru{},
+		&authproviders.AuthGoogle{},
+	}
+
+	for _, authprovider := range authproviders {
+		if authproviderid == authprovider.AuthId() {
+			return authprovider
+		}
+	}
+	return nil
+}
+
+func CheckSubCommand(commandexec string, args []string) (command string, authproviderid string) {
 	paramsSyntax := "<current|stop|aws|azure|gcloud> [-rod=...]"
 	if len(args) < 2 {
-		log.Fatalf("missing sandbox command:\n\t%s %s\n", command, paramsSyntax)
+		log.Fatalf("missing sandbox command:\n\t%s %s\n", commandexec, paramsSyntax)
 	}
-	if len(args) > 3 {
-		log.Fatalf("unexpected arguments: %s\n\t%s %s\n", strings.Join(args[1:], " "), command, paramsSyntax)
+	if len(args) > 4 {
+		log.Fatalf("unexpected arguments: %s\n\t%s %s\n", strings.Join(args[1:], " "), commandexec, paramsSyntax)
 	}
-	if len(args) == 3 && !strings.HasPrefix(args[2], "-rod=") {
+	if len(args) == 3 && !strings.HasPrefix(args[2], "-rod=") && !strings.HasPrefix(args[2], "-auth=") {
 		log.Fatalln("2")
 	}
+	if len(args) == 4 && !strings.HasPrefix(args[2], "-rod=") && !strings.HasPrefix(args[2], "-auth=") && !strings.HasPrefix(args[3], "-rod=") && !strings.HasPrefix(args[3], "-auth=") {
+		log.Fatalln("2")
+	}
+	// Get the auth provider
+	authproviderid = "guru"
+	for _, arg := range args {
+		if strings.HasPrefix(arg, "-auth=") {
+			authproviderid = strings.Split(arg, "=")[1]
+		}
+	}
+	// Get the command
 	switch args[1] {
 	case "current", "stop", "aws", "azure", "gcloud":
-		return args[1]
+		return args[1], authproviderid
 	default:
-		log.Fatalf("unknown sandbox command: %s\n\t%s %s\n", args[1], command, paramsSyntax)
+		log.Fatalf("unknown sandbox command: %s\n\t%s %s\n", args[1], commandexec, paramsSyntax)
 		// unreached
-		return "unknown"
+		return "unknown", authproviderid
 	}
 }
 
@@ -111,21 +151,6 @@ func RunCmd(cmd *exec.Cmd, logArgsCount int) []byte {
 		log.Fatalf("'%s' failed: %v\n", logCmd, err)
 	}
 	return out
-}
-
-func Login(username string, password string) *rod.Page {
-	browser := rod.New().MustConnect().NoDefaultDevice()
-	page := browser.MustPage(acgSandboxesUrl)
-	page.MustElement("input[name='email']").MustInput(username).MustType(input.Enter)
-	page.MustElement("input[name='password']").MustInput(password).MustType(input.Enter)
-	if page.MustHas("input[name='captcha']") {
-		if defaults.Show {
-			page.MustElement("input[name='captcha']").MustFocus()
-		} else {
-			log.Fatalf("Warning: CAPTCHA in login form, use -rod=show option")
-		}
-	}
-	return page
 }
 
 func Logout(page *rod.Page) *rod.Page {
