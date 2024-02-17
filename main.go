@@ -21,12 +21,9 @@ const acgSandboxesUrl = "https://learn.acloud.guru/cloud-playground/cloud-sandbo
 func main() {
 	log.SetPrefix(fmt.Sprintf("%s: ", acgSandbox))
 	command, authproviderid := CheckSubCommand(acgSandbox, os.Args)
-
-	log.Printf("%s [AuthProvider: %s]", command, authproviderid)
-
 	authprovider := AuthProviderFactory(authproviderid)
 
-	log.Printf("AuthId: %s", authprovider.AuthId())
+	log.Printf("%s [AuthProvider: %s]", command, authprovider.AuthId())
 
 	username, password := GetGitCredentials(acgSandboxesUrl)
 	page := authprovider.Login(acgSandboxesUrl, username, password)
