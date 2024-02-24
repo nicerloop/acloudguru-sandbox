@@ -10,23 +10,25 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["current"]
+            "args": ["current","-auth=${input:authprovider}"],
+            "env": {"DISPLAY":":0.1"}
         },
         {
-            "name": "Launch -rod=show,slow=1s,trace",
+            "name": "Launch Rod Debug",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["current","-rod=show,slow=1s,trace"]
-        },
+            "args": ["current","-rod=show,slow=1s,trace","-auth=${input:authprovider}"]
+        }
+    ],
+    "inputs": [
         {
-            "name": "Launch auth=google",
-            "type": "go",
-            "request": "launch",
-            "mode": "auto",
-            "program": "${workspaceFolder}",
-            "args": ["current","-rod=show,slow=1s,trace","-auth=google"]
+            "id": "authprovider",
+            "description": "Select auth provider to use?",
+            "options": ["guru","google"],
+            "default": "guru",
+            "type": "pickString"
         }
     ]
 }
