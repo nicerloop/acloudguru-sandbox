@@ -35,6 +35,25 @@ Add go-rod proxy parameters:
 
 You can directly use the [released binaries](https://github.com/nicerloop/acloudguru-sandbox/releases) or use a package manager.
 
+### Linux Requirements
+
+[Rod](https://go-rod.github.io) can use an already installed browser or automatically download and use a statically versioned chromium browser. In case of Linux, the OS need to have [those dependency installed](https://github.com/go-rod/rod/blob/main/lib/docker/Dockerfile):
+```
+    apt-get update
+    apt-get install --no-install-recommends -y \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    libgtk-3-0 \
+    libgbm1 \
+    ca-certificates \
+    fonts-liberation fonts-noto-color-emoji fonts-noto-cjk \
+    tzdata \
+    dumb-init \
+    xvfb
+```
+
 ### Windows with Scoop
 
 Install [Scoop](https://scoop.sh/):
