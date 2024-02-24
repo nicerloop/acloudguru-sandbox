@@ -83,7 +83,7 @@ func AuthProviderFactory(authproviderid string) AuthProvider {
 }
 
 func CheckSubCommand(commandexec string, args []string) (command string, authproviderid string) {
-	paramsSyntax := "<current|stop|aws|azure|gcloud> [-rod=...]"
+	paramsSyntax := "<current|stop|aws|azure|gcloud> [-auth=<guru|google>][-rod=...]"
 	if len(args) < 2 {
 		log.Fatalf("missing sandbox command:\n\t%s %s\n", commandexec, paramsSyntax)
 	}
