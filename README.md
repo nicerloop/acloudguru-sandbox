@@ -4,13 +4,18 @@ Command-line tool to manage A Cloud Guru sandboxes and configure credentials
 
 ## Usage
 
-The A Cloud Guru credentials are retrieved from git credentials store using `git dredentials fill`.
+The A Cloud Guru credentials are retrieved from git credentials store using `git credential fill`.
 
 The A Cloud Guru sandbox is started or stopped according to the requested target, and the credentials are configured for use by the local command line tools and SDKs.
 
 ```
-acloudguru-sandbox <current|stop|aws|azure|gcloud> [-rod=...]
+acloudguru-sandbox <current|stop|aws|azure|gcloud> [-auth=<guru|google>][-rod=...]
 ```
+
+Several authentications providers are supported with the optional parameter `[-auth=<guru|google>]`:
+
+- guru: The default one, a cloud guru account
+- google: Use authentification with a google account
 
 ## How does it work
 
