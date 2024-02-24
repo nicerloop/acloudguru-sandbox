@@ -50,6 +50,9 @@ func main() {
 		ConfigureGcloudSandbox(page)
 	}
 	Logout(page)
+
+	// In case of not headless browser
+	page.Browser().MustClose()
 }
 
 type AuthProvider interface {
