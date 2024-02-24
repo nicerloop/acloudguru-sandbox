@@ -4,13 +4,18 @@ Command-line tool to manage A Cloud Guru sandboxes and configure credentials
 
 ## Usage
 
-The A Cloud Guru credentials are retrieved from git credentials store using `git dredentials fill`.
+The A Cloud Guru credentials are retrieved from git credentials store using `git credential fill`.
 
 The A Cloud Guru sandbox is started or stopped according to the requested target, and the credentials are configured for use by the local command line tools and SDKs.
 
 ```
-acloudguru-sandbox <current|stop|aws|azure|gcloud> [-rod=...]
+acloudguru-sandbox <current|stop|aws|azure|gcloud> [-auth=<guru|google>][-rod=...]
 ```
+
+Several authentications providers are supported with the optional parameter `[-auth=<guru|google>]`:
+
+- guru: The default one, a cloud guru account
+- google: Use authentification with a google account
 
 ## How does it work
 
@@ -34,6 +39,25 @@ Add go-rod proxy parameters:
 ## How to install
 
 You can directly use the [released binaries](https://github.com/nicerloop/acloudguru-sandbox/releases) or use a package manager.
+
+### Linux Requirements
+
+[Rod](https://go-rod.github.io) can use an already installed browser or automatically download and use a statically versioned chromium browser. In case of Linux, the OS need to have [those dependency installed](https://github.com/go-rod/rod/blob/main/lib/docker/Dockerfile):
+```
+    apt-get update
+    apt-get install --no-install-recommends -y \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    libgtk-3-0 \
+    libgbm1 \
+    ca-certificates \
+    fonts-liberation fonts-noto-color-emoji fonts-noto-cjk \
+    tzdata \
+    dumb-init \
+    xvfb
+```
 
 ### Windows with Scoop
 
