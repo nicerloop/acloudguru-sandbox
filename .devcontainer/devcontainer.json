@@ -7,9 +7,15 @@
 	
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
+		// In case of not graphical avalable (no wslg for exemple)
+		"desktop-lite": {
+			"password": "vscode",
+			"webPort": "6080",
+			"vncPort": "5901"
+		},
 		"ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
 			// System package needed for chromium (use by go-rod)
-			"packages": "chromium"
+			"packages": "libnss3,libxss1,libasound2,libxtst6,libgtk-3-0,libgbm1,ca-certificates,fonts-liberation,fonts-noto-color-emoji,fonts-noto-cjk,tzdata,dumb-init,xvfb"
 		}
 	},
 
