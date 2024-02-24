@@ -27,6 +27,12 @@ func main() {
 
 	username, password := GetGitCredentials(acgSandboxesUrl)
 	page := authprovider.Login(acgSandboxesUrl, username, password)
+
+	// Control that we have the correct page
+	if !page.MustHas("button[data-cy='tab--cloud-sandboxes']") {
+		log.Fatalf("Error: The page %s is not available with an authenticated user", acgSandboxesUrl)
+	}
+
 	switch command {
 	case "current":
 		command = DetectSandbox(page)
@@ -52,7 +58,7 @@ func main() {
 	Logout(page)
 
 	// In case of not headless browser
-	page.Browser().MustClose()
+	defer page.Browser().MustClose()
 }
 
 type AuthProvider interface {
@@ -91,9 +97,9 @@ func CheckSubCommand(commandexec string, args []string) (command string, authpro
 		log.Fatalln("2")
 	}
 	// Get the auth provider
-	authproviderid = "guru"
+	authproviderid = "guru" // default provider
 	for _, arg := range args {
-		if strings.HasPrefix(arg, "-auth=") {
+		if strings.HasPrefix(arg, "-auth=") && len(arg) > 6 {
 			authproviderid = strings.Split(arg, "=")[1]
 		}
 	}
