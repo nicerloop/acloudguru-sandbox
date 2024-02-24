@@ -9,8 +9,6 @@ import (
 	"github.com/go-rod/rod/lib/launcher"
 )
 
-const selectorLogged = "button[data-cy='tab--cloud-sandboxes']"
-
 type AuthGoogle struct{}
 
 func (a *AuthGoogle) AuthId() string {
@@ -42,7 +40,7 @@ func (a *AuthGoogle) Login(acgSandboxesUrl string, username string, password str
 
 		// End of loop condition
 		if page.MustHas(selectorLogged) {
-			return page
+			break
 		} else if wait > 600 {
 			log.Fatalf("Error: cannot connect")
 		}
@@ -57,11 +55,10 @@ func (a *AuthGoogle) Login(acgSandboxesUrl string, username string, password str
 			log.Fatalf("Error: %s - %s", errorTitle, errorMessage)
 		}
 
-		// time.Sleep(time.Duration(250+rand.Intn(100)) * time.Millisecond)
 		page.MustWaitDOMStable()
 	}
 
-	// return page
+	return page
 }
 
 func (a *AuthGoogle) HandlePage(acgSandboxesUrl string, username string, password string, page *rod.Page) *rod.Page {
@@ -71,9 +68,6 @@ func (a *AuthGoogle) HandlePage(acgSandboxesUrl string, username string, passwor
 			fmt.Printf("error is %v\n", err)
 		}
 	}()
-
-	// Wait for google finish to display the page if not already logged
-	// page.MustElement("div[role='presentation']")
 
 	// Account selection page
 	if page.MustHas(fmt.Sprintf("div[role='link'][data-identifier='%s']", username)) {
@@ -91,10 +85,11 @@ func (a *AuthGoogle) HandlePage(acgSandboxesUrl string, username string, passwor
 	}
 
 	// Wait M2F page
-	// if page.MustHas("???") {
-	// Print message : wait for MFA on device XXXX
-	// Must wait for MFA finish
-	//}
+	if page.MustHas("iframe") {
+		fmt.Printf("\nManual action needed\n => Wainting MFA validation on your configured device (phone, tablet...)\n")
+		// Must wait for MFA finish
+		page.MustWaitOpen()
+	}
 
 	return page
 }
